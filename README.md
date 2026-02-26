@@ -1,6 +1,4 @@
 # PHP_Laravel12_UserStamps
-# Laravel UserStamps - Complete Project Guide
-
 ## Project Overview
 
 This project demonstrates how to implement **UserStamps** in Laravel to automatically track which user created, updated, and deleted records in your application.
