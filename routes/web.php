@@ -1,8 +1,20 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ActivityLogController;
+
+/*
+|--------------------------------------------------------------------------
+| Dashboard
+|--------------------------------------------------------------------------
+*/
+
+Route::get(
+    '/dashboard',
+    [PostController::class, 'dashboard']
+)->name('dashboard');
 
 /*
 |--------------------------------------------------------------------------
@@ -10,7 +22,10 @@ use App\Http\Controllers\ActivityLogController;
 |--------------------------------------------------------------------------
 */
 
-Route::resource('posts', PostController::class);
+Route::resource(
+    'posts',
+    PostController::class
+);
 
 /*
 |--------------------------------------------------------------------------
@@ -35,12 +50,8 @@ Route::delete(
 
 /*
 |--------------------------------------------------------------------------
-| Activity History
+| Post Activity
 |--------------------------------------------------------------------------
-|
-| Use {postId} instead of {post} so Laravel does not use
-| normal implicit model binding, which ignores soft-deleted posts.
-|
 */
 
 Route::get(
@@ -50,10 +61,32 @@ Route::get(
 
 /*
 |--------------------------------------------------------------------------
+| Global Activity History
+|--------------------------------------------------------------------------
+*/
+
+Route::get(
+    '/activity-history',
+    [ActivityLogController::class, 'index']
+)->name('activity.history');
+
+/*
+|--------------------------------------------------------------------------
+| CSV Export
+|--------------------------------------------------------------------------
+*/
+
+Route::get(
+    '/posts-export',
+    [PostController::class, 'export']
+)->name('posts.export');
+
+/*
+|--------------------------------------------------------------------------
 | Home
 |--------------------------------------------------------------------------
 */
 
 Route::get('/', function () {
-    return redirect()->route('posts.index');
+    return redirect()->route('dashboard');
 });
