@@ -13,7 +13,10 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::with(['creator', 'updater'])->latest()->get();
+        $posts = Post::with(['creator', 'updater'])
+            ->latest()
+            ->get();
+
         return view('posts.index', compact('posts'));
     }
 
@@ -26,7 +29,7 @@ class PostController extends Controller
     }
 
     /**
-     * Store a newly created post in storage.
+     * Store a newly created post.
      */
     public function store(Request $request)
     {
@@ -35,7 +38,7 @@ class PostController extends Controller
             'content' => 'required|string',
         ]);
 
-        // For demo, login as first user if not authenticated
+        // Demo authentication.
         if (!Auth::check()) {
             Auth::loginUsingId(1);
         }
@@ -45,7 +48,8 @@ class PostController extends Controller
             'content' => $request->content,
         ]);
 
-        return redirect()->route('posts.index')
+        return redirect()
+            ->route('posts.index')
             ->with('success', 'Post created successfully!');
     }
 
@@ -54,6 +58,12 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
+        $post->load([
+            'creator',
+            'updater',
+            'deleter',
+        ]);
+
         return view('posts.show', compact('post'));
     }
 
@@ -66,7 +76,7 @@ class PostController extends Controller
     }
 
     /**
-     * Update the specified post in storage.
+     * Update the specified post.
      */
     public function update(Request $request, Post $post)
     {
@@ -75,23 +85,33 @@ class PostController extends Controller
             'content' => 'required|string',
         ]);
 
+        if (!Auth::check()) {
+            Auth::loginUsingId(1);
+        }
+
         $post->update([
             'title' => $request->title,
             'content' => $request->content,
         ]);
 
-        return redirect()->route('posts.index')
+        return redirect()
+            ->route('posts.index')
             ->with('success', 'Post updated successfully!');
     }
 
     /**
-     * Remove the specified post from storage.
+     * Soft delete the specified post.
      */
     public function destroy(Post $post)
     {
+        if (!Auth::check()) {
+            Auth::loginUsingId(1);
+        }
+
         $post->delete();
 
-        return redirect()->route('posts.index')
+        return redirect()
+            ->route('posts.index')
             ->with('success', 'Post deleted successfully!');
     }
 
@@ -100,7 +120,11 @@ class PostController extends Controller
      */
     public function trashed()
     {
-        $posts = Post::onlyTrashed()->with(['creator', 'deleter'])->get();
+        $posts = Post::onlyTrashed()
+            ->with(['creator', 'deleter'])
+            ->latest('deleted_at')
+            ->get();
+
         return view('posts.trashed', compact('posts'));
     }
 
@@ -109,10 +133,16 @@ class PostController extends Controller
      */
     public function restore($id)
     {
+        if (!Auth::check()) {
+            Auth::loginUsingId(1);
+        }
+
         $post = Post::withTrashed()->findOrFail($id);
+
         $post->restore();
 
-        return redirect()->route('posts.trashed')
+        return redirect()
+            ->route('posts.trashed')
             ->with('success', 'Post restored successfully!');
     }
 
@@ -121,10 +151,16 @@ class PostController extends Controller
      */
     public function forceDelete($id)
     {
+        if (!Auth::check()) {
+            Auth::loginUsingId(1);
+        }
+
         $post = Post::withTrashed()->findOrFail($id);
+
         $post->forceDelete();
 
-        return redirect()->route('posts.trashed')
+        return redirect()
+            ->route('posts.trashed')
             ->with('success', 'Post permanently deleted!');
     }
 }
