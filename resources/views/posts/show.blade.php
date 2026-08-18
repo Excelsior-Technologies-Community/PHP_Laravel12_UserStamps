@@ -1,33 +1,159 @@
 @extends('layouts.app')
 
 @section('content')
+
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1>{{ $post->title }}</h1>
-    <a href="{{ route('posts.index') }}" class="btn btn-secondary">← Back</a>
+
+    <div>
+        <h1>{{ $post->title }}</h1>
+        <p class="text-muted mb-0">
+            Post #{{ $post->id }}
+        </p>
+    </div>
+
+    <div>
+        <a href="{{ route('posts.activity', $post) }}"
+           class="btn btn-info">
+            📋 Activity History
+        </a>
+
+        <a href="{{ route('posts.index') }}"
+           class="btn btn-secondary">
+            ← Back
+        </a>
+    </div>
+
 </div>
 
-<div class="card shadow">
+<div class="card shadow mb-4">
+
     <div class="card-body">
-        <p class="card-text" style="white-space: pre-line;">{{ $post->content }}</p>
-        
-        <hr>
-        
-        <div class="row">
-            <div class="col-md-6">
-                <h6>Creation Info</h6>
-                <p class="text-muted">
-                    <strong>Created by:</strong> {{ $post->creator->name ?? 'Unknown' }}<br>
-                    <strong>Created at:</strong> {{ $post->created_at->format('F j, Y g:i A') }}
-                </p>
-            </div>
-            <div class="col-md-6">
-                <h6>Last Update Info</h6>
-                <p class="text-muted">
-                    <strong>Last updated by:</strong> {{ $post->updater->name ?? 'Unknown' }}<br>
-                    <strong>Last updated at:</strong> {{ $post->updated_at->format('F j, Y g:i A') }}
-                </p>
-            </div>
-        </div>
+
+        <h5 class="card-title">Post Content</h5>
+
+        <p class="card-text" style="white-space: pre-line;">
+            {{ $post->content }}
+        </p>
+
     </div>
+
 </div>
+
+
+{{-- UserStamp Audit Information --}}
+
+<div class="card shadow">
+
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">
+            🔍 UserStamp Audit Information
+        </h5>
+    </div>
+
+    <div class="card-body">
+
+        <div class="row">
+
+            {{-- Creation Information --}}
+
+            <div class="col-md-4">
+
+                <div class="border rounded p-3 h-100">
+
+                    <h6 class="text-success">
+                        🟢 Creation Information
+                    </h6>
+
+                    <hr>
+
+                    <p class="mb-2">
+                        <strong>Created By:</strong><br>
+
+                        {{ $post->creator->name ?? 'Unknown' }}
+                    </p>
+
+                    <p class="mb-0">
+                        <strong>Created At:</strong><br>
+
+                        {{ $post->created_at->format('F j, Y g:i A') }}
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            {{-- Update Information --}}
+
+            <div class="col-md-4">
+
+                <div class="border rounded p-3 h-100">
+
+                    <h6 class="text-primary">
+                        🔵 Update Information
+                    </h6>
+
+                    <hr>
+
+                    <p class="mb-2">
+                        <strong>Updated By:</strong><br>
+
+                        {{ $post->updater->name ?? 'Unknown' }}
+                    </p>
+
+                    <p class="mb-0">
+                        <strong>Updated At:</strong><br>
+
+                        {{ $post->updated_at->format('F j, Y g:i A') }}
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            {{-- Delete Information --}}
+
+            <div class="col-md-4">
+
+                <div class="border rounded p-3 h-100">
+
+                    <h6 class="text-danger">
+                        🔴 Delete Information
+                    </h6>
+
+                    <hr>
+
+                    <p class="mb-2">
+                        <strong>Deleted By:</strong><br>
+
+                        {{ $post->deleter->name ?? 'Not Deleted' }}
+                    </p>
+
+                    <p class="mb-0">
+
+                        <strong>Deleted At:</strong><br>
+
+                        @if($post->deleted_at)
+
+                            {{ $post->deleted_at->format('F j, Y g:i A') }}
+
+                        @else
+
+                            Not Deleted
+
+                        @endif
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
 @endsection

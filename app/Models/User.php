@@ -27,19 +27,35 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    // Relationships for posts
+    /**
+     * Posts created by this user.
+     */
     public function createdPosts()
     {
         return $this->hasMany(Post::class, 'created_by');
     }
 
+    /**
+     * Posts updated by this user.
+     */
     public function updatedPosts()
     {
         return $this->hasMany(Post::class, 'updated_by');
     }
 
+    /**
+     * Posts deleted by this user.
+     */
     public function deletedPosts()
     {
         return $this->hasMany(Post::class, 'deleted_by');
+    }
+
+    /**
+     * Activity logs performed by this user.
+     */
+    public function activityLogs()
+    {
+        return $this->hasMany(ActivityLog::class);
     }
 }
